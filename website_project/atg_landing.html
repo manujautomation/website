@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mendocino Labs — Wireless Engineering & Connectivity Solutions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #04080f;
+      --bg2:     #070d1a;
+      --surface: #0c1526;
+      --border:  #1a2e50;
+      --accent:  #00c8ff;
+      --accent2: #0066ff;
+      --accent3: #00ff9d;
+      --green:   #30A46C;
+      --text:    #e8f0ff;
+      --muted:   #6b8aad;
+      --white:   #ffffff;
+      --grad1: linear-gradient(135deg, #00c8ff 0%, #0066ff 100%);
+      --grad2: linear-gradient(135deg, #00ff9d 0%, #00c8ff 100%);
+      --grad-green: linear-gradient(135deg, #30A46C 0%, #20573E 100%);
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Typography ── */
+    .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+    .label-green { color: var(--green); }
+    h1 { font-size: clamp(2.2rem, 5.5vw, 5rem); font-weight: 800; line-height: 1.1; }
+    h2 { font-size: clamp(1.7rem, 3.5vw, 3rem); font-weight: 700; line-height: 1.2; }
+    h3 { font-size: clamp(1rem, 1.8vw, 1.4rem); font-weight: 600; line-height: 1.3; }
+    p  { color: var(--muted); font-size: 1rem; max-width: 58ch; }
+
+    /* ── Layout ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .section    { padding: 7rem 0; position: relative; }
+    .section--dark { background: var(--bg2); }
+
+    /* ── Scroll reveal ── */
+    .reveal       { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-left  { opacity: 0; transform: translateX(-50px); transition: opacity 0.9s ease, transform 0.9s ease; }
+    .reveal-right { opacity: 0; transform: translateX(50px);  transition: opacity 0.9s ease, transform 0.9s ease; }
+    .reveal.visible, .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+    .delay-1 { transition-delay: 0.10s; } .delay-2 { transition-delay: 0.20s; }
+    .delay-3 { transition-delay: 0.32s; } .delay-4 { transition-delay: 0.45s; }
+    .delay-5 { transition-delay: 0.60s; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 1.5rem; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--grad1); color: #fff; }
+    .btn-primary:hover { box-shadow: 0 8px 30px rgba(0,200,255,0.3); }
+    .btn-green { background: var(--grad-green); color: #fff; }
+    .btn-green:hover { box-shadow: 0 8px 30px rgba(48,164,108,0.35); }
+    .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+    .btn-outline:hover { background: rgba(0,200,255,0.08); box-shadow: 0 8px 30px rgba(0,200,255,0.15); }
+    .btn-lg { padding: 0.9rem 2.2rem; font-size: 1rem; border-radius: 10px; }
+
+    /* ══════════════ NAV ══════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(4,8,15,0.7); backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled { border-bottom-color: var(--border); background: rgba(4,8,15,0.92); }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1rem; }
+    .nav-logo svg { flex-shrink: 0; }
+    .nav-logo-text { color: var(--white); }
+    .nav-logo-sub { color: var(--muted); font-weight: 400; margin-left: 0.2rem; font-size: 0.85rem; }
+    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
+    .nav-links a { font-size: 0.88rem; color: var(--muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+    /* ══════════════ HERO ══════════════ */
+    #hero {
+      position: relative; height: 100vh; min-height: 680px;
+      display: flex; align-items: center; overflow: hidden;
+    }
+    #hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,102,255,0.13) 0%, transparent 70%),
+                  radial-gradient(ellipse 50% 70% at 85% 70%, rgba(0,200,255,0.06) 0%, transparent 60%);
+    }
+    .hero-content { position: relative; z-index: 10; max-width: 860px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.38rem 1rem; margin-bottom: 1.5rem;
+      background: rgba(48,164,108,0.1); border: 1px solid rgba(48,164,108,0.3);
+      border-radius: 100px; font-size: 0.8rem; font-weight: 600; color: var(--green);
+    }
+    .badge-dot { width: 7px; height: 7px; background: var(--accent3); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+    .hero-title { margin-bottom: 1.4rem; }
+    .grad-text { background: var(--grad1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .grad-green { background: var(--grad-green); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--muted); margin-bottom: 2.5rem; max-width: 54ch; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: var(--muted); font-size: 0.72rem; letter-spacing: 0.12em;
+    }
+    .scroll-arrow {
+      width: 22px; height: 22px; margin-top: -2px;
+      border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg); animation: bounce 1.8s ease-in-out infinite;
+    }
+    @keyframes bounce { 0%,100%{transform:rotate(45deg) translate(0,0);opacity:1} 50%{transform:rotate(45deg) translate(4px,4px);opacity:0.4} }
+
+    /* ══════════════ STATS BAR ══════════════ */
+    #stats-bar { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 2.5rem 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); }
+    .stat-item { padding: 1rem 2rem; text-align: center; border-right: 1px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1;
+      margin-bottom: 0.3rem; background: var(--grad1);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; }
+
+    /* ══════════════ SECTION HEADER ══════════════ */
+    .section-header { margin-bottom: 4rem; }
+    .section-header .label { margin-bottom: 0.7rem; display: block; }
+    .section-header h2 { margin-bottom: 1rem; }
+    .section-header p { max-width: 60ch; }
+
+    /* ══════════════ ATG — HOW IT WORKS ══════════════ */
+    /* Equipment showcase */
+    .equipment-showcase {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;
+      margin: 3rem 0;
+    }
+    .equip-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+      overflow: hidden; position: relative;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .equip-card:hover { border-color: rgba(0,200,255,0.5); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,200,255,0.1); }
+    .equip-img-wrap { position: relative; height: 220px; overflow: hidden; background: #0a111e; }
+    .equip-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .equip-card:hover .equip-img-wrap img { transform: scale(1.05); }
+    /* ABR crop — show only the black box (left portion of singleantenna.png) */
+    .equip-img-wrap.abr-crop img {
+      object-position: left center;
+      object-fit: cover;
+      width: 65%;
+      margin-left: 0;
+      filter: brightness(1.05) contrast(1.05);
+    }
+    .equip-img-wrap::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(12,21,38,0.85) 0%, transparent 50%);
+    }
+    .equip-badge {
+      position: absolute; top: 1rem; left: 1rem; z-index: 2;
+      padding: 0.28rem 0.75rem; border-radius: 100px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: rgba(0,200,255,0.15); border: 1px solid rgba(0,200,255,0.4); color: var(--accent);
+    }
+    .equip-body { padding: 1.25rem 1.5rem 1.5rem; }
+    .equip-body h3 { color: var(--white); margin-bottom: 0.4rem; font-size: 1rem; }
+    .equip-body p  { font-size: 0.85rem; max-width: none; }
+
+    /* ATG architecture flow */
+    .atg-flow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin: 3rem 0 2rem; flex-wrap: wrap;
+    }
+    .flow-node {
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      padding: 1.4rem 1.8rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      min-width: 130px; text-align: center;
+      transition: border-color 0.3s;
+    }
+    .flow-node:hover { border-color: var(--accent); }
+    .flow-icon { font-size: 2rem; }
+    .flow-label { font-size: 0.78rem; font-weight: 600; color: var(--white); }
+    .flow-sub   { font-size: 0.7rem; color: var(--muted); }
+    .flow-arrow {
+      display: flex; align-items: center; padding: 0 0.5rem;
+      color: var(--accent); font-size: 1.4rem; position: relative;
+    }
+    .flow-arrow::before {
+      content: ''; display: block; width: 40px; height: 2px;
+      background: linear-gradient(90deg, var(--border), var(--accent));
+    }
+    .flow-arrow::after {
+      content: '▶'; font-size: 0.7rem; color: var(--accent);
+      margin-left: -4px;
+    }
+    .flow-arrow .signal-anim {
+      position: absolute; top: 50%; left: 0; transform: translateY(-50%);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent);
+      animation: travel 1.8s linear infinite;
+    }
+    @keyframes travel { 0%{left:0;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{left:calc(100% - 8px);opacity:0} }
+
+    /* Steps */
+    .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .step-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .step-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, rgba(0,200,255,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .step-num { font-size: 3.5rem; font-weight: 900; color: rgba(0,200,255,0.07); position: absolute; top: 0.8rem; right: 1.2rem; line-height: 1; }
+    .step-icon { width: 46px; height: 46px; background: rgba(0,200,255,0.1); border: 1px solid rgba(0,200,255,0.25); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 1rem; }
+    .step-card h3 { color: var(--white); margin-bottom: 0.5rem; }
+    .step-card p  { font-size: 0.88rem; max-width: none; }
+
+    /* ══════════════ FEATURES ══════════════ */
+    .feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; padding: 5rem 0; border-bottom: 1px solid var(--border); }
+    .feature-row:last-child { border-bottom: none; }
+    .feature-row.reverse .feature-visual { order: -1; }
+    .feature-text .label { margin-bottom: 0.7rem; display: block; }
+    .feature-text h2 { margin-bottom: 1rem; }
+    .feature-text p  { margin-bottom: 1.5rem; }
+    .bullets { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .bullets li { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 0.9rem; color: var(--muted); }
+    .bullets li::before {
+      content: ''; width: 18px; height: 18px; min-width: 18px; margin-top: 2px; border-radius: 50%;
+      background: rgba(0,255,157,0.1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5l2.5 2.5L8 3' stroke='%2300ff9d' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center;
+      border: 1px solid rgba(0,255,157,0.35);
+    }
+
+    /* Photo frame */
+    .photo-frame {
+      position: relative; border-radius: 20px; overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .photo-frame img { width: 100%; height: 340px; object-fit: cover; display: block; }
+    .photo-frame::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(4,8,15,0.5) 0%, transparent 60%);
+    }
+    .photo-chip {
+      position: absolute; bottom: 1.25rem; left: 1.25rem; z-index: 2;
+      padding: 0.35rem 0.9rem; border-radius: 8px;
+      background: rgba(4,8,15,0.85); backdrop-filter: blur(10px);
+      border: 1px solid var(--border); font-size: 0.78rem; color: var(--text); font-weight: 500;
+    }
+
+    /* vis card */
+    .vis-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 1.75rem; position: relative; overflow: hidden;
+    }
+    .vis-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 50% 0%, rgba(0,200,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .vis-title {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .vis-title::before { content:''; width:6px; height:6px; background:var(--accent3); border-radius:50%; animation:pulse 2s infinite; }
+    .metric-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.9rem; }
+    .metric-name { font-size: 0.8rem; color: var(--muted); min-width: 75px; }
+    .metric-bar-wrap { flex:1; height: 7px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+    .metric-bar { height: 100%; border-radius: 4px; background: var(--grad1); animation: expand 2.2s ease-out forwards; }
+    @keyframes expand { from{width:0%} }
+    .metric-val { font-size: 0.8rem; font-weight: 600; color: var(--accent); min-width: 55px; text-align: right; }
+
+    /* signal bars */
+    .signal-bars { display: flex; align-items: flex-end; gap: 4px; height: 44px; margin-top: 1.25rem; }
+    .signal-bar { width: 13px; background: var(--grad1); border-radius: 3px 3px 0 0; animation: sig 2.5s ease-in-out infinite alternate; }
+    @keyframes sig { 0%{opacity:0.35} 100%{opacity:1} }
+
+    /* ══════════════ COVERAGE MAP ══════════════ */
+    #coverage { text-align: center; }
+    .coverage-wrap { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; height: 420px; margin-top: 3rem; }
+    #coverage-canvas { width: 100%; height: 100%; }
+    .coverage-legend {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      background: rgba(4,8,15,0.88); backdrop-filter: blur(10px);
+      border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem;
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .leg-row { display: flex; align-items: center; gap: 0.55rem; font-size: 0.77rem; color: var(--muted); }
+    .leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+    /* ══════════════ TECH SPECS ══════════════ */
+    .specs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .spec-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem; transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .spec-card:hover { border-color: rgba(0,200,255,0.4); box-shadow: 0 0 30px rgba(0,200,255,0.07); }
+    .spec-icon { font-size: 1.7rem; margin-bottom: 0.9rem; }
+    .spec-value { font-size: 1.5rem; font-weight: 800; background: var(--grad1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.2rem; }
+    .spec-card h3 { font-size: 0.95rem; color: var(--white); margin-bottom: 0.4rem; }
+    .spec-card p  { font-size: 0.84rem; max-width: none; }
+
+    /* ══════════════ SOLUTIONS GRID ══════════════ */
+    #solutions { background: var(--bg); }
+    .solutions-intro { text-align: center; margin-bottom: 4rem; }
+    .solutions-intro p { margin: 0 auto; }
+    .solutions-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 2rem; }
+    .sol-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 2.5rem; position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .sol-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
+    .sol-card::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      opacity: 0; transition: opacity 0.3s;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,200,255,0.07) 0%, transparent 70%);
+    }
+    .sol-card:hover::before { opacity: 1; }
+
+    /* per-card accent colors */
+    .sol-card.sol-blue  { --sol-c: #00c8ff; }
+    .sol-card.sol-green { --sol-c: #30A46C; }
+    .sol-card.sol-purple{ --sol-c: #a855f7; }
+    .sol-card.sol-orange{ --sol-c: #f97316; }
+    .sol-card:hover { border-color: var(--sol-c); }
+    .sol-card::before { background: radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in srgb, var(--sol-c) 12%, transparent) 0%, transparent 70%); }
+
+    .sol-icon-wrap {
+      width: 56px; height: 56px; border-radius: 14px; margin-bottom: 1.5rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+      border: 1px solid; transition: transform 0.3s;
+    }
+    .sol-card:hover .sol-icon-wrap { transform: scale(1.08); }
+    .sol-blue  .sol-icon-wrap { background: rgba(0,200,255,0.1);  border-color: rgba(0,200,255,0.3);  }
+    .sol-green .sol-icon-wrap { background: rgba(48,164,108,0.1); border-color: rgba(48,164,108,0.3); }
+    .sol-purple.sol-icon-wrap, .sol-purple .sol-icon-wrap { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); }
+    .sol-orange .sol-icon-wrap { background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.3); }
+
+    .sol-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.6rem; color: var(--sol-c); }
+    .sol-card h3 { font-size: 1.2rem; color: var(--white); margin-bottom: 0.75rem; }
+    .sol-card p  { font-size: 0.88rem; max-width: none; margin-bottom: 1.5rem; }
+    .sol-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .sol-tag {
+      padding: 0.25rem 0.7rem; border-radius: 100px; font-size: 0.72rem; font-weight: 600;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--muted);
+    }
+    .sol-atg-banner {
+      grid-column: 1 / -1;
+      display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+    }
+    .sol-atg-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.28rem 0.8rem; border-radius: 100px; margin-bottom: 0.75rem;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: rgba(0,255,157,0.1); border: 1px solid rgba(0,255,157,0.35); color: var(--accent3);
+    }
+
+    /* ══════════════ QUOTE ══════════════ */
+    #testimonial { text-align: center; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .quote-text { font-size: clamp(1.15rem, 2.2vw, 1.65rem); font-weight: 600; color: var(--white); line-height: 1.55; max-width: 780px; margin: 0 auto 1.5rem; }
+    .hl { background: var(--grad1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .quote-attr { font-size: 0.84rem; color: var(--muted); }
+
+    /* ══════════════ CTA ══════════════ */
+    #cta { text-align: center; }
+    .cta-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 28px;
+      padding: 5rem 3rem; position: relative; overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute; width: 700px; height: 300px;
+      background: radial-gradient(ellipse, rgba(0,102,255,0.15) 0%, transparent 70%);
+      top: -120px; left: 50%; transform: translateX(-50%); pointer-events: none;
+      animation: glow 4s ease-in-out infinite;
+    }
+    @keyframes glow { 0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)} 50%{opacity:1;transform:translateX(-50%) scale(1.1)} }
+    .cta-card .label { margin-bottom: 1rem; display: block; }
+    .cta-card h2 { margin-bottom: 1.25rem; }
+    .cta-card > p { margin: 0 auto 2.5rem; }
+    .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ══════════════ FOOTER ══════════════ */
+    footer { background: var(--bg); border-top: 1px solid var(--border); padding: 3rem 0 2rem; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
+    .footer-brand { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.84rem; color: var(--muted); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { font-size: 0.78rem; color: var(--muted); margin-top: 2rem; text-align: center; }
+
+    /* ══════════════ RESPONSIVE ══════════════ */
+    @media (max-width: 960px) {
+      .equipment-showcase { grid-template-columns: 1fr 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .feature-row { grid-template-columns: 1fr; gap: 2.5rem; }
+      .feature-row.reverse .feature-visual { order: 0; }
+      .specs-grid { grid-template-columns: 1fr 1fr; }
+      .solutions-grid { grid-template-columns: 1fr; }
+      .sol-atg-banner { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(3) { border-top: 1px solid var(--border); }
+    }
+    @media (max-width: 640px) {
+      .equipment-showcase { grid-template-columns: 1fr; }
+      .specs-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .atg-flow { gap: 0.5rem; }
+      .flow-arrow::before { width: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════ NAV ════════ -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <!-- Mendocino Labs real SVG logo mark -->
+    <svg width="32" height="28" viewBox="0 0 47 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="7.49952" height="41.7644" rx="3.74976" transform="matrix(0.954363 0.29865 -0.38984 0.920883 39.1313 0)" fill="#30A46C"/>
+      <rect width="7.49952" height="37.5879" rx="3.74976" transform="matrix(0.954363 0.29865 -0.38984 0.920883 26.0781 4.0929)" fill="#2F7C57"/>
+      <rect width="7.49952" height="33.4115" rx="3.74976" transform="matrix(0.954363 0.29865 -0.38984 0.920883 13.0254 7.36707)" fill="#20573E"/>
+    </svg>
+    <span class="nav-logo-text">Mendocino Labs</span>
+    <span class="nav-logo-sub">/ SkyConnect ATG</span>
+  </div>
+  <div class="nav-links">
+    <a href="#atg">ATG Solution</a>
+    <a href="#solutions">Solutions</a>
+    <a href="#coverage">Coverage</a>
+    <a href="#specs">Specs</a>
+    <a href="https://www.mendocinolabs.com" target="_blank">About Us</a>
+  </div>
+  <div class="nav-actions">
+    <a href="#cta" class="btn btn-primary">Request Demo</a>
+  </div>
+</nav>
+
+<!-- ════════ HERO ════════ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-glow"></div>
+
+  <!-- SVG flight path + animated plane -->
+  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5" viewBox="0 0 1440 700" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <filter id="gf"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <!-- towers -->
+    <g opacity="0.45">
+      <line x1="120" y1="650" x2="120" y2="575" stroke="#0066ff" stroke-width="2"/>
+      <circle cx="120" cy="570" r="6" fill="#0066ff" opacity="0.7"/>
+      <line x1="380" y1="650" x2="380" y2="580" stroke="#0066ff" stroke-width="2"/>
+      <circle cx="380" cy="575" r="6" fill="#0066ff" opacity="0.7"/>
+      <line x1="700" y1="650" x2="700" y2="585" stroke="#0066ff" stroke-width="2"/>
+      <circle cx="700" cy="580" r="6" fill="#0066ff" opacity="0.7"/>
+      <line x1="1020" y1="650" x2="1020" y2="578" stroke="#0066ff" stroke-width="2"/>
+      <circle cx="1020" cy="573" r="6" fill="#0066ff" opacity="0.7"/>
+      <line x1="1300" y1="650" x2="1300" y2="582" stroke="#0066ff" stroke-width="2"/>
+      <circle cx="1300" cy="577" r="6" fill="#0066ff" opacity="0.7"/>
+    </g>
+    <g id="sig-beams" opacity="0" style="transition:opacity 1.5s ease">
+      <line x1="120" y1="570" x2="480" y2="235" stroke="#00c8ff" stroke-width="1" stroke-dasharray="7 5" opacity="0.45"/>
+      <line x1="380" y1="575" x2="620" y2="215" stroke="#00c8ff" stroke-width="1" stroke-dasharray="7 5" opacity="0.45"/>
+      <line x1="700" y1="580" x2="780" y2="205" stroke="#00c8ff" stroke-width="1" stroke-dasharray="7 5" opacity="0.45"/>
+      <line x1="1020" y1="573" x2="950" y2="218" stroke="#00c8ff" stroke-width="1" stroke-dasharray="7 5" opacity="0.45"/>
+      <line x1="1300" y1="577" x2="1110" y2="235" stroke="#00c8ff" stroke-width="1" stroke-dasharray="7 5" opacity="0.45"/>
+    </g>
+    <path id="trail" fill="none" stroke="#00c8ff" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.3"
+      d="M 80 360 C 200 345, 360 275, 510 235 S 770 198, 920 212 S 1160 238, 1390 305"/>
+    <circle id="plane-dot" r="9" fill="#00ff9d" filter="url(#gf)"/>
+    <circle id="plane-ring" r="9" fill="none" stroke="#00ff9d" stroke-width="1.2" opacity="0"/>
+  </svg>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><div class="badge-dot"></div>Nationwide ATG network — live</div>
+      <h1 class="hero-title">
+        Full-Stack Wireless<br>
+        <span class="grad-text">Engineering & Connectivity</span>
+      </h1>
+      <p class="hero-sub">
+        From Air-to-Ground broadband at 35,000 ft to Open 5G Core, Private 5G,
+        and AI-powered telecom — Mendocino Labs delivers end-to-end wireless
+        solutions for the most demanding environments.
+      </p>
+      <div class="hero-actions">
+        <a href="#atg" class="btn btn-primary btn-lg">Explore ATG Solution →</a>
+        <a href="#solutions" class="btn btn-outline btn-lg">All Solutions</a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>SCROLL</span><div class="scroll-arrow"></div></div>
+</section>
+
+<!-- ════════ STATS ════════ -->
+<section id="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal delay-1">
+        <div class="stat-number" data-target="300" data-suffix="+">0</div>
+        <div class="stat-label">Ground Sites Nationwide</div>
+      </div>
+      <div class="stat-item reveal delay-2">
+        <div class="stat-number" data-target="99" data-suffix=".9%">0</div>
+        <div class="stat-label">Network Uptime SLA</div>
+      </div>
+      <div class="stat-item reveal delay-3">
+        <div class="stat-number" data-target="30" data-suffix=" Mbps">0</div>
+        <div class="stat-label">Peak Downlink Speed</div>
+      </div>
+      <div class="stat-item reveal delay-4">
+        <div class="stat-number" data-target="75" data-suffix=" ms">0</div>
+        <div class="stat-label">Typical Latency</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ ATG — HOW IT WORKS ════════ -->
+<section id="atg" class="section section--dark">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="label">ATG Solution</span>
+      <h2>Internet at 35,000 Feet —<br>Air-to-Ground Connectivity</h2>
+      <p>Our purpose-built ATG 4G/5G network beams broadband directly from
+         ground towers to aircraft antennas, eliminating satellite latency
+         and delivering reliable in-flight internet coast to coast.</p>
+    </div>
+
+    <!-- Real equipment photos -->
+    <div class="equipment-showcase">
+      <!-- ABR unit — cropped from singleantenna.png -->
+      <div class="equip-card reveal delay-1">
+        <div class="equip-img-wrap abr-crop">
+          <span class="equip-badge">ABR Modem</span>
+          <img src="content/singleantenna.png" alt="ABR modem unit — onboard router" loading="lazy"/>
+        </div>
+        <div class="equip-body">
+          <h3>Onboard ABR Modem</h3>
+          <p>Compact avionics-grade router installed inside the aircraft cabin,
+             providing WiFi to passengers and crew via the ATG link.</p>
+        </div>
+      </div>
+
+      <!-- Antenna installed on plane belly -->
+      <div class="equip-card reveal delay-2">
+        <div class="equip-img-wrap">
+          <span class="equip-badge">Installed Antenna</span>
+          <img src="content/antennaonplane_2.jpeg" alt="ATG antenna installed on aircraft belly" loading="lazy"/>
+        </div>
+        <div class="equip-body">
+          <h3>Belly-Mounted ATG Antenna</h3>
+          <p>Low-profile phased-array antenna STC-installed on the aircraft
+             fuselage, facing downward to communicate with ground towers.</p>
+        </div>
+      </div>
+
+      <!-- Ground tower -->
+      <div class="equip-card reveal delay-3">
+        <div class="equip-img-wrap">
+          <span class="equip-badge">Ground Tower</span>
+          <img src="content/groundTower.jpg" alt="ATG ground tower" loading="lazy"/>
+        </div>
+        <div class="equip-body">
+          <h3>ATG Ground Station</h3>
+          <p>Purpose-built towers with skyward-facing sector antennas,
+             connected to our packet core via fiber backhaul for ultra-low
+             latency delivery.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signal flow diagram -->
+    <div class="atg-flow reveal delay-2">
+      <div class="flow-node">
+        <div class="flow-icon">🌐</div>
+        <div class="flow-label">Internet</div>
+        <div class="flow-sub">Packet Core</div>
+      </div>
+      <div class="flow-arrow"><div class="signal-anim"></div></div>
+      <div class="flow-node">
+        <div class="flow-icon">🗼</div>
+        <div class="flow-label">Ground Tower</div>
+        <div class="flow-sub">4G/5G NR</div>
+      </div>
+      <div class="flow-arrow"><div class="signal-anim" style="animation-delay:0.6s"></div></div>
+      <div class="flow-node">
+        <div class="flow-icon">📡</div>
+        <div class="flow-label">ATG Antenna</div>
+        <div class="flow-sub">Belly-mounted</div>
+      </div>
+      <div class="flow-arrow"><div class="signal-anim" style="animation-delay:1.2s"></div></div>
+      <div class="flow-node">
+        <div class="flow-icon">📦</div>
+        <div class="flow-label">ABR Modem</div>
+        <div class="flow-sub">Onboard router</div>
+      </div>
+      <div class="flow-arrow"><div class="signal-anim" style="animation-delay:1.8s"></div></div>
+      <div class="flow-node">
+        <div class="flow-icon">💻</div>
+        <div class="flow-label">Passengers</div>
+        <div class="flow-sub">Cabin WiFi</div>
+      </div>
+    </div>
+
+    <!-- 3 steps -->
+    <div class="steps-grid">
+      <div class="step-card reveal delay-1">
+        <div class="step-num">01</div>
+        <div class="step-icon">🗼</div>
+        <h3>300+ Ground Sites</h3>
+        <p>Skyward-facing 4G LTE / 5G NR towers blanket the continental US.
+           Each site runs 2–4 BBUs with 3 RRH sectors per unit, engineered
+           for high-altitude aircraft angles.</p>
+      </div>
+      <div class="step-card reveal delay-2">
+        <div class="step-num">02</div>
+        <div class="step-icon">✈️</div>
+        <h3>STC-Certified Hardware</h3>
+        <p>Belly-mounted antenna + ABR modem installed via standard STC.
+           No custom airframe modifications. Compatible with business jets,
+           turboprops, and regional aircraft.</p>
+      </div>
+      <div class="step-card reveal delay-3">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚡</div>
+        <h3>Seamless Handover</h3>
+        <p>Our OAM platform tracks each flight via ADS-B and orchestrates
+           X2/S1 handovers between sectors as the aircraft crosses coverage
+           zones at 500+ knots.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FEATURES ════════ -->
+<section id="features" class="section">
+  <div class="container">
+
+    <!-- Feature 1: RF Performance -->
+    <div class="feature-row">
+      <div class="feature-text reveal-left">
+        <span class="label">RF Performance</span>
+        <h2>4G LTE & 5G NR — Dual Mode</h2>
+        <p>Dual-mode radios serve existing LTE ABR modems while enabling 5G NR
+           throughput for next-generation fleets. CQI-adaptive modulation
+           maximizes spectral efficiency at every altitude.</p>
+        <ul class="bullets">
+          <li>Up to 30 Mbps downlink per sector on LTE</li>
+          <li>CQI-adaptive modulation: QPSK to 256-QAM</li>
+          <li>Per-flight RF telemetry: CQI, SNR, RSRP, BLER, MCS</li>
+          <li>Samsung & Ericsson RAN equipment</li>
+        </ul>
+      </div>
+      <div class="feature-visual reveal-right">
+        <div class="vis-card">
+          <div class="vis-title">Live RF Metrics — N199XP</div>
+          <div class="metric-row"><span class="metric-name">Downlink</span><div class="metric-bar-wrap"><div class="metric-bar" style="width:72%"></div></div><span class="metric-val">28 Mbps</span></div>
+          <div class="metric-row"><span class="metric-name">Uplink</span><div class="metric-bar-wrap"><div class="metric-bar" style="width:50%;animation-delay:0.2s"></div></div><span class="metric-val">8 Mbps</span></div>
+          <div class="metric-row"><span class="metric-name">CQI</span><div class="metric-bar-wrap"><div class="metric-bar" style="width:80%;animation-delay:0.4s;background:var(--grad2)"></div></div><span class="metric-val" style="color:var(--accent3)">12 / 15</span></div>
+          <div class="metric-row"><span class="metric-name">RSRP</span><div class="metric-bar-wrap"><div class="metric-bar" style="width:68%;animation-delay:0.6s;background:var(--grad2)"></div></div><span class="metric-val" style="color:var(--accent3)">-91 dBm</span></div>
+          <div class="metric-row"><span class="metric-name">Latency</span><div class="metric-bar-wrap"><div class="metric-bar" style="width:42%;animation-delay:0.8s"></div></div><span class="metric-val">75 ms</span></div>
+          <div class="signal-bars">
+            <div class="signal-bar" style="height:25%;animation-delay:0s"></div>
+            <div class="signal-bar" style="height:45%;animation-delay:0.15s"></div>
+            <div class="signal-bar" style="height:62%;animation-delay:0.3s"></div>
+            <div class="signal-bar" style="height:78%;animation-delay:0.45s"></div>
+            <div class="signal-bar" style="height:90%;animation-delay:0.6s"></div>
+            <div class="signal-bar" style="height:100%;animation-delay:0.75s"></div>
+            <div class="signal-bar" style="height:95%;animation-delay:0.9s"></div>
+            <div class="signal-bar" style="height:85%;animation-delay:1.05s"></div>
+            <div class="signal-bar" style="height:90%;animation-delay:1.2s"></div>
+            <div class="signal-bar" style="height:100%;animation-delay:1.35s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2: OAM + flight analysis -->
+    <div class="feature-row reverse">
+      <div class="feature-text reveal-right">
+        <span class="label">Operational Intelligence</span>
+        <h2>Full-Flight Telemetry & OAM</h2>
+        <p>Our OAM platform correlates ADS-B position data with LTE metrics
+           at 1-second granularity. Every flight is analyzed from block-out
+           to block-in — gaps, handovers, and RF degradation classified automatically.</p>
+        <ul class="bullets">
+          <li>ADS-B ↔ LTE correlation at ±20 s time window</li>
+          <li>Automated gap classification: site_down, rf_degradation, handoff_gap</li>
+          <li>Per-BBU / per-sector health monitoring</li>
+          <li>DOCX flight reports with executive summaries</li>
+        </ul>
+      </div>
+      <div class="feature-visual reveal-left">
+        <div class="vis-card">
+          <div class="vis-title">Flight N928JS — Coverage Report</div>
+          <div style="position:relative;height:160px;background:var(--bg);border-radius:10px;overflow:hidden;margin-bottom:1.25rem">
+            <canvas id="mini-map-canvas" style="width:100%;height:100%"></canvas>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;text-align:center">
+            <div><div style="font-size:1.3rem;font-weight:800;color:var(--accent3)">98.2%</div><div style="font-size:0.72rem;color:var(--muted)">Connected</div></div>
+            <div><div style="font-size:1.3rem;font-weight:800;color:var(--accent)">3</div><div style="font-size:0.72rem;color:var(--muted)">Gap Events</div></div>
+            <div><div style="font-size:1.3rem;font-weight:800;color:var(--white)">2h 14m</div><div style="font-size:0.72rem;color:var(--muted)">Flight Time</div></div>
+            <div><div style="font-size:1.3rem;font-weight:800;color:var(--accent)">47</div><div style="font-size:0.72rem;color:var(--muted)">Handovers</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3: tower + antenna photo -->
+    <div class="feature-row">
+      <div class="feature-text reveal-left">
+        <span class="label">Ground Infrastructure</span>
+        <h2>Purpose-Built ATG Tower Network</h2>
+        <p>Our ground stations are not repurposed cell towers. Each site is
+           engineered with skyward-facing directional antennas optimized for
+           aircraft elevation angles, delivering consistent signal at cruise altitude.</p>
+        <ul class="bullets">
+          <li>Sector antennas tuned for 3°–30° elevation angles</li>
+          <li>2–4 BBUs per site, 3 RRH sectors per BBU</li>
+          <li>Fiber-connected backhaul to regional packet core nodes</li>
+          <li>Remote monitoring via OAM — zero truck-roll maintenance</li>
+        </ul>
+      </div>
+      <div class="feature-visual reveal-right" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="photo-frame">
+          <img src="content/groundTower.jpg" alt="ATG ground tower" loading="lazy"/>
+          <span class="photo-chip">ATG Ground Tower</span>
+        </div>
+        <div class="photo-frame">
+          <img src="content/Antenna.jpg" alt="Tower antenna array close-up" loading="lazy"/>
+          <span class="photo-chip">Sector Antennas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 4: plane antenna install photos -->
+    <div class="feature-row reverse">
+      <div class="feature-text reveal-right">
+        <span class="label">Aircraft Installation</span>
+        <h2>STC-Certified Airborne Hardware</h2>
+        <p>The antenna and ABR modem kit installs via a straightforward STC
+           process. The flat belly-mounted antenna makes no aerodynamic impact
+           and is compatible with a wide range of business and regional aircraft.</p>
+        <ul class="bullets">
+          <li>Flat-profile antenna — minimal drag penalty</li>
+          <li>Compatible with jets, turboprops, and regional aircraft</li>
+          <li>Single coax run from antenna to ABR modem</li>
+          <li>ABR modem provides dual-band cabin WiFi for crew and passengers</li>
+        </ul>
+      </div>
+      <div class="feature-visual reveal-left" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="photo-frame">
+          <img src="content/antennaonplane_2.jpeg" alt="ATG antenna installed on plane belly" loading="lazy"/>
+          <span class="photo-chip">Antenna Installed</span>
+        </div>
+        <div class="photo-frame">
+          <!-- ABR + antenna product shot -->
+          <img src="content/DUAL_system.png" alt="ABR modem and dual antenna system" loading="lazy" style="object-fit:contain;background:#0a111e"/>
+          <span class="photo-chip">ABR + Antenna Kit</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════ COVERAGE MAP ════════ -->
+<section id="coverage" class="section section--dark">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center">
+      <span class="label">Network Coverage</span>
+      <h2>Nationwide — Coast to Coast</h2>
+      <p style="margin:0 auto">300+ ATG ground sites blanket the continental US above 10,000 ft,
+         with 200 NM offshore extension for coastal and island routes.</p>
+    </div>
+    <div class="coverage-wrap reveal delay-2">
+      <canvas id="coverage-canvas"></canvas>
+      <div class="coverage-legend">
+        <div class="leg-row"><div class="leg-dot" style="background:#00ff9d"></div>ATG Site (Active)</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#0066ff;opacity:0.5"></div>Coverage Zone</div>
+        <div class="leg-row"><div class="leg-dot" style="background:#00c8ff"></div>Active Flight</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TECH SPECS ════════ -->
+<section id="specs" class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="label">Technical Specifications</span>
+      <h2>Engineered for Demanding<br>Environments</h2>
+    </div>
+    <div class="specs-grid">
+      <div class="spec-card reveal delay-1"><div class="spec-icon">📡</div><div class="spec-value">4G/5G</div><h3>Radio Access Technology</h3><p>LTE and 5G NR dual-mode, 256-QAM downlink, carrier aggregation on Samsung / Ericsson RAN.</p></div>
+      <div class="spec-card reveal delay-2"><div class="spec-icon">⚡</div><div class="spec-value">&lt; 75 ms</div><h3>End-to-End Latency</h3><p>Low-latency packet core with optimized backhaul routing for real-time applications.</p></div>
+      <div class="spec-card reveal delay-3"><div class="spec-icon">🔄</div><div class="spec-value">&lt; 200 ms</div><h3>Handover Duration</h3><p>X2/S1 handover completes in under 200 ms at 500+ knot aircraft speeds — imperceptible to users.</p></div>
+      <div class="spec-card reveal delay-1"><div class="spec-icon">🛡️</div><div class="spec-value">AES-256</div><h3>Security & Encryption</h3><p>End-to-end LTE security, IPsec tunneling to packet core, per-device SIM authentication.</p></div>
+      <div class="spec-card reveal delay-2"><div class="spec-icon">🌐</div><div class="spec-value">±20 s</div><h3>ADS-B Correlation</h3><p>ADS-B position correlated with LTE metrics within ±20 s for precise spatial-temporal analysis.</p></div>
+      <div class="spec-card reveal delay-3"><div class="spec-icon">📊</div><div class="spec-value">1 sec</div><h3>Telemetry Granularity</h3><p>Per-second RF and network metrics stored in TimescaleDB — enabling deep per-flight forensics.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ ALL SOLUTIONS ════════ -->
+<section id="solutions" class="section section--dark">
+  <div class="container">
+    <div class="solutions-intro reveal">
+      <span class="label" style="display:block;margin-bottom:0.75rem">Full Portfolio</span>
+      <h2>End-to-End Wireless Solutions</h2>
+      <p>Beyond ATG, Mendocino Labs delivers the full wireless stack — from 5G core
+         to private networks and AI-driven telecom operations.</p>
+    </div>
+
+    <div class="solutions-grid" style="margin-top:3rem">
+
+      <!-- ATG — featured full-width -->
+      <div class="sol-card sol-blue sol-atg-banner reveal delay-1">
+        <div>
+          <div class="sol-atg-badge"><div class="badge-dot"></div>Flagship Product</div>
+          <div class="sol-label">ATG Connectivity</div>
+          <h3>SkyConnect Air-to-Ground Network</h3>
+          <p>Nationwide 4G/5G broadband for commercial and private aircraft. Our ATG network
+             connects passengers and crew from takeoff to touchdown with low-latency internet —
+             no satellite required.</p>
+          <div class="sol-tags" style="margin-bottom:1.5rem">
+            <span class="sol-tag">300+ Ground Sites</span>
+            <span class="sol-tag">4G LTE / 5G NR</span>
+            <span class="sol-tag">ADS-B Correlated OAM</span>
+            <span class="sol-tag">STC-Certified Hardware</span>
+            <span class="sol-tag">Real-Time Handover</span>
+          </div>
+          <a href="#atg" class="btn btn-primary">Explore ATG →</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1rem;min-width:260px">
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;height:150px">
+            <img src="content/antennaonplane_2.jpeg" alt="ATG antenna on aircraft" style="width:100%;height:100%;object-fit:cover"/>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;height:100px">
+            <img src="content/singleantenna.png" alt="ABR modem" style="width:65%;height:100%;object-fit:cover;object-position:left center"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- LTE/5G E2E -->
+      <div class="sol-card sol-blue reveal delay-1">
+        <div class="sol-icon-wrap">📶</div>
+        <div class="sol-label">End-to-End Provider</div>
+        <h3>LTE / 5G End-to-End Solutions</h3>
+        <p>Full-stack wireless delivery from RF planning and RAN deployment through
+           packet core integration, backhaul design, and live network optimization.
+           We support operators at every layer of the 3GPP stack.</p>
+        <div class="sol-tags">
+          <span class="sol-tag">RF Planning</span>
+          <span class="sol-tag">RAN Deployment</span>
+          <span class="sol-tag">Core Integration</span>
+          <span class="sol-tag">Samsung / Ericsson</span>
+          <span class="sol-tag">Field Ops</span>
+          <span class="sol-tag">OAM</span>
+        </div>
+      </div>
+
+      <!-- Open 5G Core -->
+      <div class="sol-card sol-green reveal delay-2">
+        <div class="sol-icon-wrap">🔓</div>
+        <div class="sol-label">Open Standards</div>
+        <h3>Open 5G Core</h3>
+        <p>Vendor-neutral 5G Standalone core deployment using open-source and
+           cloud-native components (OpenAirInterface, free5GC, Open5GS).
+           We design, harden, and operate 5G SA cores for private and public networks.</p>
+        <div class="sol-tags">
+          <span class="sol-tag">5G SA Core</span>
+          <span class="sol-tag">Cloud-Native</span>
+          <span class="sol-tag">OpenAirInterface</span>
+          <span class="sol-tag">O-RAN</span>
+          <span class="sol-tag">Kubernetes</span>
+          <span class="sol-tag">Multi-vendor</span>
+        </div>
+      </div>
+
+      <!-- Private 5G -->
+      <div class="sol-card sol-purple reveal delay-3">
+        <div class="sol-icon-wrap">🏭</div>
+        <div class="sol-label">Enterprise & Industrial</div>
+        <h3>Private 5G Networks</h3>
+        <p>Dedicated CBRS and licensed-band 5G networks for airports, manufacturing,
+           defense, and campus environments. From spectrum acquisition through
+           deployment, integration, and 24/7 managed operations.</p>
+        <div class="sol-tags">
+          <span class="sol-tag">CBRS Band 48</span>
+          <span class="sol-tag">Licensed mmWave</span>
+          <span class="sol-tag">Network Slicing</span>
+          <span class="sol-tag">Edge Compute</span>
+          <span class="sol-tag">IoT Integration</span>
+          <span class="sol-tag">Managed NOC</span>
+        </div>
+      </div>
+
+      <!-- AI Telecom -->
+      <div class="sol-card sol-orange reveal delay-4">
+        <div class="sol-icon-wrap">🤖</div>
+        <div class="sol-label">AI & Automation</div>
+        <h3>AI-Based Telecom Solutions</h3>
+        <p>Machine-learning models trained on network telemetry to predict coverage
+           gaps, automate RAN parameter optimization, detect anomalies in real time,
+           and generate actionable fleet-level insights for operations teams.</p>
+        <div class="sol-tags">
+          <span class="sol-tag">Predictive Coverage</span>
+          <span class="sol-tag">Anomaly Detection</span>
+          <span class="sol-tag">RAN Auto-Optimization</span>
+          <span class="sol-tag">Fleet Analytics</span>
+          <span class="sol-tag">TimescaleDB</span>
+          <span class="sol-tag">Real-Time Inference</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ QUOTE ════════ -->
+<section id="testimonial" class="section">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <span class="label" style="display:block;margin-bottom:1.5rem">Why Operators Choose Mendocino Labs</span>
+      <p class="quote-text">
+        "Moving from satellite to ATG was transformational —
+        <span class="hl">latency dropped dramatically and passengers noticed immediately.</span>
+        Mendocino Labs had us live and operational in under 90 days."
+      </p>
+      <p class="quote-attr">— Fleet Operations Director, Regional Charter Operator</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ CTA ════════ -->
+<section id="cta" class="section section--dark">
+  <div class="container">
+    <div class="cta-card reveal">
+      <div class="cta-glow"></div>
+      <span class="label">Get Connected</span>
+      <h2>Ready to Put Your Fleet Online<br>at Altitude?</h2>
+      <p>Talk to our engineering team about ATG coverage for your routes, aircraft
+         compatibility, Private 5G, or any full-stack wireless challenge.</p>
+      <div class="cta-actions">
+        <a href="mailto:contact@mendocinolabs.com" class="btn btn-primary btn-lg">Contact Engineering Team →</a>
+        <a href="https://www.mendocinolabs.com" target="_blank" class="btn btn-outline btn-lg">Visit Mendocino Labs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg width="30" height="26" viewBox="0 0 47 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="7.49952" height="41.7644" rx="3.74976" transform="matrix(0.954363 0.29865 -0.38984 0.920883 39.1313 0)" fill="#30A46C"/>
+          <rect width="7.49952" height="37.5879" rx="3.74976" transform="matrix(0.954363 0.29865 -0.38984 0.920883 26.0781 4.0929)" fill="#2F7C57"/>
+          <rect width="7.49952" height="33.4115" rx="3.74976" transform="matrix(0.954363 0.29865 -0.38984 0.920883 13.0254 7.36707)" fill="#20573E"/>
+        </svg>
+        <span>Mendocino Labs</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.mendocinolabs.com">mendocinolabs.com</a>
+        <a href="mailto:contact@mendocinolabs.com">contact@mendocinolabs.com</a>
+        <a href="#atg">ATG Solution</a>
+        <a href="#solutions">All Solutions</a>
+        <a href="#specs">Specs</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Mendocino Labs. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ════════ JS — Motion & Canvas ════════ -->
+<script>
+/* ── Nav scroll border ── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 50));
+
+/* ── Intersection Observer: reveals ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => obs.observe(el));
+
+/* ── Animated counters ── */
+function animCount(el) {
+  const target = +el.dataset.target, suffix = el.dataset.suffix || '';
+  const start = performance.now();
+  (function update(now) {
+    const p = Math.min((now - start) / 2000, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * ease) + suffix;
+    if (p < 1) requestAnimationFrame(update);
+  })(start);
+}
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-target]').forEach(animCount);
+    }
+  });
+}, { threshold: 0.5 }).observe(document.getElementById('stats-bar'));
+
+/* ── Hero particle canvas ── */
+(function() {
+  const c = document.getElementById('hero-canvas'), ctx = c.getContext('2d');
+  let W, H;
+  const resize = () => { W = c.width = c.offsetWidth; H = c.height = c.offsetHeight; };
+  resize(); window.addEventListener('resize', resize);
+  const pts = Array.from({length:70}, () => ({
+    x: Math.random()*1440, y: Math.random()*700,
+    vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+    r: Math.random()*1.4+.5, a: Math.random()*.45+.1
+  }));
+  (function draw() {
+    ctx.clearRect(0,0,W,H);
+    for (let i=0;i<pts.length;i++) for (let j=i+1;j<pts.length;j++) {
+      const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
+      if(d<115){ ctx.beginPath(); ctx.strokeStyle=`rgba(0,102,255,${.11*(1-d/115)})`; ctx.lineWidth=.7; ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+    }
+    pts.forEach(p=>{
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(0,200,255,${p.a})`; ctx.fill();
+      p.x=(p.x+p.vx+W)%W; p.y=(p.y+p.vy+H)%H;
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ── Hero flight path ── */
+(function() {
+  const trail = document.getElementById('trail');
+  const dot   = document.getElementById('plane-dot');
+  const ring  = document.getElementById('plane-ring');
+  const beams = document.getElementById('sig-beams');
+  if (!trail) return;
+  const len = trail.getTotalLength();
+  trail.style.strokeDasharray = len;
+  trail.style.strokeDashoffset = len;
+  let t = 0;
+  (function go() {
+    t = (t + 0.0012) % 1;
+    const pt = trail.getPointAtLength(len * t);
+    dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
+    ring.setAttribute('cx', pt.x); ring.setAttribute('cy', pt.y);
+    trail.style.strokeDashoffset = len * (1 - t);
+    requestAnimationFrame(go);
+  })();
+  setInterval(() => {
+    let s = 0;
+    (function ex() {
+      s += 0.5; ring.setAttribute('r', 9+s); ring.setAttribute('opacity', Math.max(0, .7-s*.035));
+      if(s<22) requestAnimationFrame(ex);
+    })();
+  }, 2000);
+  setTimeout(() => { beams.style.opacity = '1'; }, 1400);
+})();
+
+/* ── Mini map canvas (flight route) ── */
+(function() {
+  const c = document.getElementById('mini-map-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let W, H;
+  const resize = () => { W = c.width = c.offsetWidth; H = c.height = c.offsetHeight; };
+  resize();
+  const route = [[.12,.55],[.28,.42],[.45,.35],[.60,.32],[.75,.38],[.88,.50]];
+  const sites = Array.from({length:25}, () => [.08+Math.random()*.84, .12+Math.random()*.76]);
+  let t = 0;
+  (function draw() {
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#04080f'; ctx.fillRect(0,0,W,H);
+    // sites
+    sites.forEach(([x,y]) => {
+      ctx.beginPath(); ctx.arc(x*W,y*H,W*.05,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,102,255,0.04)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(x*W,y*H,2,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,200,255,0.4)'; ctx.fill();
+    });
+    // route
+    ctx.beginPath();
+    route.forEach(([x,y],i) => i===0?ctx.moveTo(x*W,y*H):ctx.lineTo(x*W,y*H));
+    ctx.strokeStyle='#00ff9d'; ctx.lineWidth=2; ctx.stroke();
+    // plane
+    t=(t+.005)%1;
+    const seg=route.length-1, idx=Math.min(Math.floor(t*seg),seg-1), lt=(t*seg)-idx;
+    const px=(route[idx][0]+(route[idx+1][0]-route[idx][0])*lt)*W;
+    const py=(route[idx][1]+(route[idx+1][1]-route[idx][1])*lt)*H;
+    ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
+    ctx.fillStyle='#00ff9d'; ctx.shadowColor='#00ff9d'; ctx.shadowBlur=10; ctx.fill(); ctx.shadowBlur=0;
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ── Coverage canvas ── */
+(function() {
+  const c = document.getElementById('coverage-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let W, H;
+  const resize = () => { W = c.width = c.offsetWidth; H = c.height = c.offsetHeight; };
+  resize(); window.addEventListener('resize', resize);
+
+  const outline = [[.06,.30],[.12,.14],[.23,.09],[.40,.07],[.58,.06],[.72,.10],[.83,.18],[.91,.31],[.94,.46],[.90,.63],[.80,.78],[.65,.88],[.45,.92],[.28,.90],[.15,.80],[.08,.65],[.05,.48]];
+  const sitePos = [[.14,.40],[.22,.27],[.29,.50],[.33,.34],[.39,.22],[.43,.54],[.49,.37],[.51,.64],[.56,.27],[.59,.47],[.63,.34],[.66,.60],[.71,.41],[.73,.24],[.76,.54],[.79,.37],[.83,.49],[.36,.64],[.46,.71],[.61,.71],[.21,.59],[.26,.71],[.56,.74],[.69,.67],[.43,.44],[.53,.54],[.31,.41],[.63,.21],[.49,.27],[.71,.57]];
+  const siteMeta = sitePos.map(([x,y]) => ({x,y,phase:Math.random()*Math.PI*2}));
+  const flights = [
+    {route:[[.13,.40],[.44,.32],[.73,.42]],t:.15,s:.0016},
+    {route:[[.22,.55],[.51,.44],[.81,.37]],t:.55,s:.001},
+    {route:[[.31,.34],[.56,.27],[.79,.47]],t:.38,s:.0019},
+  ];
+  function getPt(r,t){const seg=r.length-1,idx=Math.min(Math.floor(t*seg),seg-1),lt=(t*seg)-idx;return[(r[idx][0]+(r[idx+1][0]-r[idx][0])*lt)*W,(r[idx][1]+(r[idx+1][1]-r[idx][1])*lt)*H];}
+  let tick=0;
+  (function draw(){
+    ctx.clearRect(0,0,W,H); tick++;
+    const bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#04080f'); bg.addColorStop(1,'#060c18');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    // outline
+    ctx.beginPath(); outline.forEach(([x,y],i)=>i===0?ctx.moveTo(x*W,y*H):ctx.lineTo(x*W,y*H)); ctx.closePath();
+    ctx.fillStyle='rgba(0,102,255,0.04)'; ctx.strokeStyle='rgba(0,102,255,0.22)'; ctx.lineWidth=1.5; ctx.fill(); ctx.stroke();
+    // sites
+    siteMeta.forEach(s=>{
+      const sx=s.x*W,sy=s.y*H,pulse=Math.sin(tick*.03+s.phase),r=W*.052+W*.005*pulse;
+      const g=ctx.createRadialGradient(sx,sy,0,sx,sy,r); g.addColorStop(0,'rgba(0,102,255,0.09)'); g.addColorStop(1,'rgba(0,102,255,0)');
+      ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+      ctx.beginPath(); ctx.arc(sx,sy,3,0,Math.PI*2); ctx.fillStyle=`rgba(0,255,157,${.65+.3*pulse})`; ctx.fill();
+    });
+    // flights
+    flights.forEach(f=>{
+      f.t=(f.t+f.s)%1;
+      ctx.beginPath(); f.route.forEach(([x,y],i)=>i===0?ctx.moveTo(x*W,y*H):ctx.lineTo(x*W,y*H));
+      ctx.strokeStyle='rgba(0,200,255,0.2)'; ctx.lineWidth=1; ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]);
+      const [px,py]=getPt(f.route,f.t);
+      ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fillStyle='#00c8ff'; ctx.shadowColor='#00c8ff'; ctx.shadowBlur=12; ctx.fill(); ctx.shadowBlur=0;
+      const rr=13+8*Math.abs(Math.sin(tick*.05+f.t*10));
+      ctx.beginPath(); ctx.arc(px,py,rr,0,Math.PI*2); ctx.strokeStyle=`rgba(0,200,255,${.3-.25*Math.abs(Math.sin(tick*.05+f.t*10))})`; ctx.lineWidth=1; ctx.stroke();
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
+</script>
+</body>
+</html>
