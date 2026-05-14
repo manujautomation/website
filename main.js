@@ -1112,3 +1112,43 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   render();
 
 })(); // end cinematicScene
+
+/* ══════════════════════════════════════════════════════
+   MOBILE NAV — hamburger toggle
+══════════════════════════════════════════════════════ */
+(function() {
+  const btn    = document.getElementById('nav-hamburger');
+  const drawer = document.getElementById('nav-drawer');
+  if (!btn || !drawer) return;
+
+  function openDrawer() {
+    btn.classList.add('open');
+    drawer.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    btn.classList.remove('open');
+    drawer.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', function() {
+    if (drawer.classList.contains('open')) closeDrawer();
+    else openDrawer();
+  });
+
+  // Close when a drawer link is clicked
+  drawer.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', closeDrawer);
+  });
+
+  // Close on ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDrawer();
+  });
+})();
