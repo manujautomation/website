@@ -141,6 +141,83 @@
   </div>
 </div>
 
+<!-- ══════════ CINEMATIC ECOSYSTEM ══════════ -->
+<section id="cinematic" class="cine-section">
+  <!-- Multi-layer canvas stack -->
+  <canvas id="cine-bg"      class="cine-layer cine-layer--bg"></canvas>
+  <canvas id="cine-city"    class="cine-layer cine-layer--city"></canvas>
+  <canvas id="cine-grid"    class="cine-layer cine-layer--grid"></canvas>
+  <canvas id="cine-network" class="cine-layer cine-layer--network"></canvas>
+  <canvas id="cine-top"     class="cine-layer cine-layer--top"></canvas>
+
+  <!-- Cinematic overlays -->
+  <div class="cine-scanlines"></div>
+  <div class="cine-vignette"></div>
+  <div class="cine-letterbox cine-letterbox--top"></div>
+  <div class="cine-letterbox cine-letterbox--bottom"></div>
+
+  <!-- Content overlay -->
+  <div class="cine-content">
+    <div class="cine-eyebrow">
+      <span class="cine-dot"></span>
+      One Intelligent Network Platform
+    </div>
+    <h2 class="cine-title">
+      Powering Aviation, Enterprise,<br>
+      <span class="cine-title--grad">AI &amp; Industrial Connectivity</span>
+    </h2>
+    <p class="cine-sub">
+      From aircraft at 35,000 ft to smart factory floors — every node,
+      every signal, every insight unified on a single intelligent infrastructure.
+    </p>
+
+    <!-- Floating solution badges -->
+    <div class="cine-badges">
+      <span class="cine-badge cine-badge--cyan">Open 5G Core</span>
+      <span class="cine-badge cine-badge--green">Private 5G</span>
+      <span class="cine-badge cine-badge--blue">ATG Aviation</span>
+      <span class="cine-badge cine-badge--teal">Edge Computing</span>
+      <span class="cine-badge cine-badge--purple">Industrial IoT</span>
+      <span class="cine-badge cine-badge--orange">AI &amp; ML</span>
+      <span class="cine-badge cine-badge--nvidia">GPU Accelerated</span>
+      <span class="cine-badge cine-badge--cloud">Cloud &amp; Data Center</span>
+    </div>
+  </div>
+
+  <!-- Live telemetry HUD panels -->
+  <div class="cine-hud cine-hud--tl">
+    <div class="cine-hud-title">ATG NETWORK</div>
+    <div class="cine-hud-row"><span>Aircraft Online</span><span class="cine-hud-val cine-val-cyan" id="hud-aircraft">0</span></div>
+    <div class="cine-hud-row"><span>Active Handovers</span><span class="cine-hud-val cine-val-green" id="hud-handovers">0</span></div>
+    <div class="cine-hud-row"><span>Avg Latency</span><span class="cine-hud-val cine-val-cyan">72 ms</span></div>
+    <div class="cine-hud-bar"><div class="cine-hud-fill cine-fill-cyan" style="width:78%"></div></div>
+  </div>
+
+  <div class="cine-hud cine-hud--tr">
+    <div class="cine-hud-title">AI INTELLIGENCE</div>
+    <div class="cine-hud-row"><span>Model Accuracy</span><span class="cine-hud-val cine-val-purple">98.2%</span></div>
+    <div class="cine-hud-row"><span>GPU Cores Active</span><span class="cine-hud-val cine-val-orange" id="hud-gpu">0</span></div>
+    <div class="cine-hud-row"><span>Inferences/sec</span><span class="cine-hud-val cine-val-purple" id="hud-inf">0</span></div>
+    <div class="cine-hud-bar"><div class="cine-hud-fill cine-fill-purple" style="width:94%"></div></div>
+  </div>
+
+  <div class="cine-hud cine-hud--bl">
+    <div class="cine-hud-title">PRIVATE 5G</div>
+    <div class="cine-hud-row"><span>Sites Active</span><span class="cine-hud-val cine-val-green">247</span></div>
+    <div class="cine-hud-row"><span>IoT Devices</span><span class="cine-hud-val cine-val-teal" id="hud-iot">0</span></div>
+    <div class="cine-hud-row"><span>Throughput</span><span class="cine-hud-val cine-val-green">4.8 Tbps</span></div>
+    <div class="cine-hud-bar"><div class="cine-hud-fill cine-fill-green" style="width:88%"></div></div>
+  </div>
+
+  <div class="cine-hud cine-hud--br">
+    <div class="cine-hud-title">EDGE COMPUTE</div>
+    <div class="cine-hud-row"><span>Edge Nodes</span><span class="cine-hud-val cine-val-teal" id="hud-nodes">0</span></div>
+    <div class="cine-hud-row"><span>Avg Latency</span><span class="cine-hud-val cine-val-cyan">&lt; 8 ms</span></div>
+    <div class="cine-hud-row"><span>CPU Utilization</span><span class="cine-hud-val cine-val-orange">71%</span></div>
+    <div class="cine-hud-bar"><div class="cine-hud-fill cine-fill-teal" style="width:71%"></div></div>
+  </div>
+</section>
+
 <!-- ══════════ ATG ══════════ -->
 <section id="atg" class="section">
   <div class="container">
