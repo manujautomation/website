@@ -1152,3 +1152,47 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (e.key === 'Escape') closeDrawer();
   });
 })();
+
+/* ── Contact Modal ── */
+function openContactModal() {
+  var overlay = document.getElementById('contact-modal');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() {
+    var first = overlay.querySelector('input');
+    if (first) first.focus();
+  }, 50);
+}
+
+function closeContactModal() {
+  var overlay = document.getElementById('contact-modal');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  var name    = document.getElementById('cm-name').value.trim();
+  var email   = document.getElementById('cm-email').value.trim();
+  var checked = document.querySelector('input[name="cm-subject"]:checked');
+  var subject = checked ? checked.value : 'General Inquiry';
+  var message = document.getElementById('cm-message').value.trim();
+  if (!name || !email || !message) return;
+  var to      = 'contact@mendocinolabs.com';
+  var subLine = encodeURIComponent('[Website] ' + subject);
+  var body    = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message);
+  window.location.href = 'mailto:' + to + '?subject=' + subLine + '&body=' + body;
+  closeContactModal();
+}
+
+// Close on backdrop click
+document.getElementById('contact-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeContactModal();
+});
+
+// Close on ESC (modal)
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeContactModal();
+});

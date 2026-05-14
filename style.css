@@ -775,3 +775,80 @@ footer {
   .cine-hud { display: none; }
   .cine-letterbox { height: 4%; }
 }
+
+/* ══════════════ CONTACT MODAL ══════════════ */
+.cmodal-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(2,8,18,0.82);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.cmodal-overlay.open { display: flex; }
+
+.cmodal-box {
+  position: relative; width: 100%; max-width: 560px;
+  background: #0d1726;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem 2.5rem 2rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  animation: cmodal-in 0.25s cubic-bezier(.16,1,.3,1);
+}
+@keyframes cmodal-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.cmodal-close {
+  position: absolute; top: 1.1rem; right: 1.25rem;
+  background: none; border: none;
+  color: var(--muted); font-size: 1.6rem; line-height: 1;
+  cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.cmodal-close:hover { color: var(--white); background: rgba(255,255,255,0.07); }
+
+.cmodal-box h3 { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--white); }
+.cmodal-sub { font-size: 0.87rem; color: var(--muted); margin-bottom: 1.8rem; }
+
+.cmodal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0; }
+
+.cmodal-field { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+.cmodal-field label {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+.cmodal-field input,
+.cmodal-field textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.72rem 1rem;
+  color: var(--white);
+  font-size: 0.93rem; font-family: inherit;
+  resize: none; outline: none;
+  transition: border-color 0.2s;
+}
+.cmodal-field input::placeholder,
+.cmodal-field textarea::placeholder { color: var(--muted); }
+.cmodal-field input:focus,
+.cmodal-field textarea:focus { border-color: var(--cyan); }
+
+.cmodal-radio-group { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+.cmodal-radio { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.cmodal-radio input[type="radio"] { accent-color: var(--cyan); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+.cmodal-radio span { font-size: 0.87rem; color: var(--text); white-space: nowrap; }
+
+.cmodal-actions {
+  display: flex; gap: 0.75rem; justify-content: flex-end;
+  margin-top: 1.8rem; padding-top: 1.4rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 540px) {
+  .cmodal-box { padding: 2rem 1.4rem 1.6rem; }
+  .cmodal-row { grid-template-columns: 1fr; }
+  .cmodal-radio span { white-space: normal; }
+}

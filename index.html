@@ -621,7 +621,7 @@
       <p>Talk to our engineering team about Private 5G, Open 5G Core, ATG coverage,
          Edge AI, or any full-stack wireless challenge your organization faces.</p>
       <div class="cta-actions">
-        <a href="mailto:contact@mendocinolabs.com" class="btn btn-primary btn-lg">Contact Engineering Team &rarr;</a>
+        <button onclick="openContactModal()" class="btn btn-primary btn-lg">Contact Engineering Team &rarr;</button>
         <a href="https://www.mendocinolabs.com" target="_blank" class="btn btn-ghost btn-lg">Visit Mendocino Labs</a>
       </div>
     </div>
@@ -652,6 +652,44 @@
     <p class="footer-copy">&copy; 2026 Mendocino Labs. All rights reserved. Advanced Private 5G, Edge AI &amp; Telecom Intelligence.</p>
   </div>
 </footer>
+
+<!-- ══════════ CONTACT MODAL ══════════ -->
+<div id="contact-modal" class="cmodal-overlay" role="dialog" aria-modal="true" aria-labelledby="cmodal-title" aria-hidden="true">
+  <div class="cmodal-box">
+    <button class="cmodal-close" onclick="closeContactModal()" aria-label="Close">&times;</button>
+    <h3 id="cmodal-title">Contact Engineering Team</h3>
+    <p class="cmodal-sub">We'll get back to you within one business day.</p>
+    <form id="contact-form" onsubmit="submitContactForm(event)" novalidate>
+      <div class="cmodal-row">
+        <div class="cmodal-field">
+          <label for="cm-name">Name</label>
+          <input type="text" id="cm-name" placeholder="Your name" required autocomplete="name">
+        </div>
+        <div class="cmodal-field">
+          <label for="cm-email">Email</label>
+          <input type="email" id="cm-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+      </div>
+      <div class="cmodal-field">
+        <label>Select Subject</label>
+        <div class="cmodal-radio-group">
+          <label class="cmodal-radio"><input type="radio" name="cm-subject" value="General Inquiry" checked><span>General Inquiry</span></label>
+          <label class="cmodal-radio"><input type="radio" name="cm-subject" value="Interested in Products"><span>Interested in Products</span></label>
+          <label class="cmodal-radio"><input type="radio" name="cm-subject" value="Feedback"><span>Feedback</span></label>
+          <label class="cmodal-radio"><input type="radio" name="cm-subject" value="Investment Inquiry"><span>Investment Inquiry</span></label>
+        </div>
+      </div>
+      <div class="cmodal-field">
+        <label for="cm-message">Message</label>
+        <textarea id="cm-message" rows="4" placeholder="Write your message…" required></textarea>
+      </div>
+      <div class="cmodal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeContactModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Send Message &rarr;</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script src="main.js"></script>
 </body>
